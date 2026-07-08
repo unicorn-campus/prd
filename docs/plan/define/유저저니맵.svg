@@ -1,0 +1,126 @@
+<svg viewBox="0 0 960 620" xmlns="http://www.w3.org/2000/svg" font-family="'Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+  <!-- 배경 -->
+  <rect x="0" y="0" width="960" height="620" fill="#ffffff"/>
+
+  <!-- 제목 -->
+  <text x="480" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#1f2937">
+    고객 여정 맵 감정 곡선 — 바쁜 실속형 직장인(김도윤, 32세)
+  </text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#6b7280">
+    통신사 멤버십 앱: 포인트·혜택 확인 여정 (6단계, 감정 1~5점)
+  </text>
+
+  <!-- 좌표축 -->
+  <g stroke="#9ca3af" stroke-width="1">
+    <line x1="90" y1="90" x2="90" y2="420"/>
+    <line x1="90" y1="420" x2="900" y2="420"/>
+  </g>
+
+  <!-- Y축 그리드 및 라벨 (레벨 1~5) -->
+  <g font-size="12" fill="#6b7280">
+    <!-- level5 y=100, level1 y=420, step 80 -->
+    <line x1="90" y1="100" x2="900" y2="100" stroke="#e5e7eb" stroke-dasharray="4,4"/>
+    <text x="78" y="104" text-anchor="end">5</text>
+    <line x1="90" y1="180" x2="900" y2="180" stroke="#e5e7eb" stroke-dasharray="4,4"/>
+    <text x="78" y="184" text-anchor="end">4</text>
+    <line x1="90" y1="260" x2="900" y2="260" stroke="#e5e7eb" stroke-dasharray="4,4"/>
+    <text x="78" y="264" text-anchor="end">3</text>
+    <line x1="90" y1="340" x2="900" y2="340" stroke="#e5e7eb" stroke-dasharray="4,4"/>
+    <text x="78" y="344" text-anchor="end">2</text>
+    <line x1="90" y1="420" x2="900" y2="420" stroke="#e5e7eb" stroke-dasharray="4,4"/>
+    <text x="78" y="424" text-anchor="end">1</text>
+  </g>
+  <text x="40" y="255" font-size="13" fill="#374151" transform="rotate(-90 40 255)" text-anchor="middle">감정 레벨</text>
+
+  <!-- 감정 영역 배경 (부정/중립/긍정) -->
+  <rect x="90" y="340" width="810" height="80" fill="#fee2e2" opacity="0.35"/>
+  <rect x="90" y="260" width="810" height="80" fill="#fef9c3" opacity="0.35"/>
+  <rect x="90" y="100" width="810" height="160" fill="#dcfce7" opacity="0.35"/>
+
+  <!-- 감정 곡선 데이터: 단계별 x, level -> y = 420-(level-1)*80 -->
+  <!-- 단계1(x=145,lv3,y=260) 단계2(x=290,lv2,y=340) 단계3(x=435,lv2,y=340)
+       단계4(x=580,lv3,y=260) 단계5(x=725,lv1,y=420) 단계6(x=870,lv2,y=340) -->
+  <polyline points="145,260 290,340 435,340 580,260 725,420 870,340"
+            fill="none" stroke="#2563eb" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- 데이터 포인트 -->
+  <g>
+    <circle cx="145" cy="260" r="7" fill="#2563eb"/>
+    <circle cx="290" cy="340" r="7" fill="#2563eb"/>
+    <circle cx="435" cy="340" r="7" fill="#dc2626"/>
+    <circle cx="580" cy="260" r="7" fill="#2563eb"/>
+    <circle cx="725" cy="420" r="9" fill="#dc2626"/>
+    <circle cx="870" cy="340" r="7" fill="#2563eb"/>
+  </g>
+
+  <!-- 레벨 값 라벨 (포인트 위) -->
+  <g font-size="13" font-weight="bold" fill="#111827">
+    <text x="145" y="245" text-anchor="middle">3</text>
+    <text x="290" y="325" text-anchor="middle">2</text>
+    <text x="435" y="325" text-anchor="middle">2</text>
+    <text x="580" y="245" text-anchor="middle">3</text>
+    <text x="725" y="405" text-anchor="middle" fill="#b91c1c">1 (최저)</text>
+    <text x="870" y="325" text-anchor="middle">2</text>
+  </g>
+
+  <!-- 단계 구분선 -->
+  <g stroke="#d1d5db" stroke-width="1" stroke-dasharray="2,3">
+    <line x1="217" y1="90" x2="217" y2="420"/>
+    <line x1="362" y1="90" x2="362" y2="420"/>
+    <line x1="507" y1="90" x2="507" y2="420"/>
+    <line x1="652" y1="90" x2="652" y2="420"/>
+    <line x1="797" y1="90" x2="797" y2="420"/>
+  </g>
+
+  <!-- X축 단계명 + Pain Point 라벨 -->
+  <g font-size="13" font-weight="bold" fill="#1f2937" text-anchor="middle">
+    <text x="145" y="445">1. 혜택 필요 인식</text>
+    <text x="290" y="445">2. 정보 탐색</text>
+    <text x="290" y="461" font-size="11" font-weight="normal">(앱 헤매기)</text>
+    <text x="435" y="445">3. 확인 또는 포기</text>
+    <text x="580" y="445">4. 혜택 사용 시도</text>
+    <text x="725" y="445">5. 뒤늦은 손해 인지</text>
+    <text x="870" y="445">6. 체념 및 반복</text>
+  </g>
+
+  <g font-size="11.5" fill="#4b5563" text-anchor="middle">
+    <text x="145" y="480">결제 순간 촉박,</text>
+    <text x="145" y="495">뒷사람 눈치 보임</text>
+
+    <text x="290" y="480">포인트·등급·혜택이</text>
+    <text x="290" y="495">여러 화면에 흩어짐</text>
+
+    <text x="435" y="480">헤매다 시간 부족으로</text>
+    <text x="435" y="495">결국 포기하고 결제함</text>
+
+    <text x="580" y="480">매장 조건이 달라</text>
+    <text x="580" y="495">현장에서 적용 실패</text>
+
+    <text x="725" y="480" fill="#b91c1c" font-weight="bold">포인트 소멸을</text>
+    <text x="725" y="495" fill="#b91c1c" font-weight="bold">뒤늦게 발견함</text>
+
+    <text x="870" y="480">다짐해도 습관은</text>
+    <text x="870" y="495">바뀌지 않고 반복됨</text>
+  </g>
+
+  <!-- 범례 -->
+  <g font-size="12" fill="#374151">
+    <circle cx="110" cy="545" r="6" fill="#2563eb"/>
+    <text x="122" y="549">일반 감정 지점</text>
+    <circle cx="250" cy="545" r="6" fill="#dc2626"/>
+    <text x="262" y="549">주요 이탈·최저 위험 지점(3단계 포기, 5단계 손해 인지)</text>
+  </g>
+
+  <g font-size="11" fill="#6b7280">
+    <rect x="90" y="565" width="14" height="14" fill="#dcfce7" opacity="0.6"/>
+    <text x="110" y="576">긍정(4~5)</text>
+    <rect x="220" y="565" width="14" height="14" fill="#fef9c3" opacity="0.6"/>
+    <text x="240" y="576">중립(3)</text>
+    <rect x="330" y="565" width="14" height="14" fill="#fee2e2" opacity="0.6"/>
+    <text x="350" y="576">부정(1~2)</text>
+  </g>
+
+  <text x="480" y="605" text-anchor="middle" font-size="11" fill="#9ca3af">
+    출처: 관찰결과.md · 체험결과.md · 고객경험인터뷰결과.md · 고객경험인터뷰결과취합.md (세그먼트1. 바쁜 실속형 직장인 기준)
+  </text>
+</svg>

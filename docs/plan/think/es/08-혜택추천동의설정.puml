@@ -1,0 +1,64 @@
+@startuml
+!theme mono
+title 08. 혜택추천 동의 설정
+' 반영: 인사이트 - 위치정보 동의를 개인정보 동의와 별도 항목으로 분리하고 위치정보보호법 정책 추가
+' 반영: 인사이트 - 미성년 고객 법정대리인 동의 분기는 MVP 범위에서 제외함(통신 회선 가입 시점 성인 인증 완료 기준 가정, 설계 변경 불필요)
+' 반영: 가디언 - 항목별 개별동의(부분동의) 분기 및 철회 시 06 중단 정책 추가
+' 반영: 데브백 - 동의상태변경됨 이벤트 발행으로 크로스서비스 전파 명시
+' 반영: 데브프론트 - 설정화면 재진입을 통한 재동의/철회 경로 보강
+
+actor "고객" as Customer
+participant "설정화면" as Settings
+participant "혜택알림추천서비스" as NotifyService
+
+== 최초 동의 ==
+
+Customer -> NotifyService: [커맨드] 최초 진입 시 혜택 추천·알림 동의 화면 진입
+activate NotifyService
+
+NotifyService -> NotifyService: [정책/규칙] 개인정보보호법 - 이용목적·수집항목 사전 고지 후 동의 필수
+NotifyService -> NotifyService: [정책/규칙] 위치정보의 보호 및 이용 등에 관한 법률 - 위치정보는 개인정보 동의와 별도 항목으로 분리하여 고지·동의
+NotifyService --> Customer: [이벤트] 동의 항목 안내됨\n[데이터] (개인정보보호법) 이용실적 동의, (위치정보법) 위치정보 동의, 알림수신 동의 - 항목별 개별 체크박스
+
+alt 전체 동의
+    Customer -> NotifyService: [커맨드] 전체 동의 등록
+    NotifyService --> Customer: [이벤트] 동의등록됨, 맞춤 추천·알림 활성화됨
+    NotifyService -> NotifyService: [이벤트] 동의상태변경됨(전체동의) - 멤버십조회서비스/혜택알림추천서비스에 전파
+else 부분 동의 (항목별 개별동의)
+    Customer -> NotifyService: [커맨드] 일부 항목만 동의 등록\n[데이터] 예: 알림수신만 동의, 위치정보 미동의
+    NotifyService --> Customer: [이벤트] 부분동의등록됨, 동의 항목 범위 내에서만 기능 활성화됨\n[안내메시지] 위치 기반 추천은 위치정보 동의 시 이용 가능합니다
+    NotifyService -> NotifyService: [이벤트] 동의상태변경됨(부분동의)
+else 전체 미동의
+    Customer -> NotifyService: [커맨드] 동의 거부
+    NotifyService --> Customer: [이벤트] 기본 혜택 안내만 제공됨 (개인화 미적용)\n[안내메시지] 설정에서 언제든 동의 변경 가능
+    NotifyService -> NotifyService: [이벤트] 동의상태변경됨(미동의)
+end
+deactivate NotifyService
+
+== 재동의/철회 ==
+
+Customer -> Settings: [커맨드] 설정 화면 진입
+Settings -> NotifyService: [커맨드] 현재 동의 상태 조회 요청
+activate NotifyService
+NotifyService --> Settings: [이벤트] 현재 동의 항목별 상태 회신됨
+deactivate NotifyService
+Settings --> Customer: [이벤트] 동의 항목별 현재 상태 표시됨
+
+alt 재동의 / 동의 항목 추가
+    Customer -> Settings: [커맨드] 미동의 항목 재동의
+    Settings -> NotifyService: [커맨드] 동의 갱신 요청
+    activate NotifyService
+    NotifyService --> Settings: [이벤트] 동의등록됨, 맞춤 추천·알림 활성화됨
+    NotifyService -> NotifyService: [이벤트] 동의상태변경됨(갱신)
+    deactivate NotifyService
+else 동의 철회
+    Customer -> Settings: [커맨드] 동의 철회
+    Settings -> NotifyService: [커맨드] 동의 철회 요청
+    activate NotifyService
+    NotifyService --> Settings: [이벤트] 동의철회됨
+    NotifyService -> NotifyService: [이벤트] 동의상태변경됨(철회)
+    NotifyService -> NotifyService: [정책/규칙] 철회 시 06(개인화 혜택 추천) 즉시 중단
+    deactivate NotifyService
+end
+
+@enduml

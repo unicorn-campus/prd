@@ -1,0 +1,46 @@
+@startuml
+!theme mono
+title 06. 개인화 혜택 추천 확인
+' 반영: 인사이트 - 마이데이터연계(신용정보법 대상, 외부 시스템)를 자사 DB 조회로 단순화하여 통신비밀보호법 근거 오귀속 문제 해소
+' 반영: 피오, 마법사 - 추천 산출 방식을 "규칙 매칭(MVP, 추천모델 미적용)"으로 구체적 단순 규칙 명시(과잉설계 방지)
+' 반영: 피오 - "혜택안내 전용 발신식별" 정책을 04/05/06 공통 반영
+' 반영: 마법사 - 추천혜택사용됨/미사용됨 이벤트 추가(향후 학습데이터 원천)
+' 반영: 가디언 - 실패/지연/동의철회 예외처리 분기 신규 추가(기존 0개)
+' 반영: 데브백 - 08에서 발행하는 동의상태변경됨 이벤트를 참조하는 정책 명시
+' 반영: 파이프 - 내부 조회 타임아웃/서킷브레이커 정책 추가
+
+actor "고객" as Customer
+participant "혜택알림추천서비스" as NotifyService
+participant "멤버십조회서비스" as MembershipService
+
+NotifyService -> MembershipService: [커맨드] 자사 결제업종·이용빈도·등급 데이터 조회 요청 (동의 고객 한정)
+activate NotifyService
+
+alt 정상 응답 및 동의 유효
+    MembershipService --> NotifyService: [이벤트] 이용실적 데이터 회신됨\n[데이터] 결제업종, 이용빈도, 등급
+    NotifyService -> NotifyService: [정책/규칙] 통신비밀보호법 - 통화·문자 등 통신내용 제외, 자사 이용실적만 활용
+    NotifyService -> NotifyService: [정책/규칙] 동의 상태 확인 - 08이 발행한 동의상태변경됨 이벤트의 최신값 참조
+    NotifyService -> NotifyService: [정책/규칙] 규칙 매칭 방식(MVP, 추천모델 미적용) - 최근 30일 최다 결제업종 1개 기준 해당 업종 제휴 혜택 매칭
+    NotifyService -> NotifyService: [이벤트] 시간·장소·이용패턴 기반 추천 혜택 산출됨
+    NotifyService --> Customer: [이벤트] 지금 나에게 딱 맞는 혜택 알림 전송됨\n[정책/규칙] 혜택안내 전용 발신식별 사용
+else 조회 실패/지연
+    NotifyService -> NotifyService: [정책/규칙] 내부 조회 타임아웃 3초 + 서킷브레이커 적용
+    NotifyService --> Customer: [이벤트] 추천 보류됨 (기본 혜택 안내로 대체)
+else 동의 철회 상태
+    NotifyService --> Customer: [이벤트] 개인화 추천 중단됨\n[안내메시지] 동의 철회로 맞춤 추천이 제공되지 않습니다
+end
+deactivate NotifyService
+
+Customer -> NotifyService: [커맨드] 추천 혜택 확인
+activate NotifyService
+NotifyService --> Customer: [이벤트] 추천 혜택 상세 표시됨\n[데이터] 추천사유, 예상절감액
+deactivate NotifyService
+
+Customer -> NotifyService: [커맨드] 매장에서 추천 혜택 사용 시도
+alt 추천 혜택 사용
+    NotifyService --> Customer: [이벤트] 추천혜택사용됨
+else 추천 혜택 미사용
+    NotifyService --> Customer: [이벤트] 추천혜택미사용됨
+end
+
+@enduml

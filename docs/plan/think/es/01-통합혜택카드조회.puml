@@ -1,0 +1,29 @@
+@startuml
+!theme mono
+title 01. 통합 혜택 카드 조회
+' 반영: 인사이트 - 전자상거래법(소비자보호법) 요구사항인 포인트 유효기간·소멸예정일 상시표시 데이터/정책 추가
+' 반영: 가디언 - 캐시-원부 데이터 불일치 시나리오 분기 추가(원부 신뢰 원칙, 캐시 무효화)
+
+actor "고객" as Customer
+participant "멤버십조회서비스" as MembershipService
+
+Customer -> MembershipService: [커맨드] 통합 혜택 카드 조회 요청
+activate MembershipService
+
+MembershipService -> MembershipService: [정책/규칙] 캐시 우선 조회 후 원부 데이터 이원화 조회
+MembershipService -> MembershipService: [정책/규칙] 전자상거래법 - 포인트 유효기간·소멸예정일 상시 표시 의무
+
+alt 조회 정상 (캐시-원부 일치)
+    MembershipService --> Customer: [이벤트] 포인트·등급·혜택 카드 표시됨\n[데이터] 포인트잔액, 등급, 보유혜택목록, 포인트유효기간, 소멸예정일
+else 캐시-원부 데이터 불일치 감지
+    MembershipService -> MembershipService: [정책/규칙] 원부 데이터 신뢰 원칙 - 불일치 시 원부값 기준으로 표시하고 캐시 무효화
+    MembershipService --> Customer: [이벤트] 포인트·등급·혜택 카드 표시됨 (원부 기준 재표시)\n[데이터] 포인트잔액, 등급, 보유혜택목록, 포인트유효기간, 소멸예정일
+else 조회 실패 (감정 저점 대응 - 정보 탐색 단계)
+    MembershipService --> Customer: [이벤트] 카드 조회 실패 안내됨\n[안내메시지] 정보를 불러오지 못했습니다. 다시 시도해주세요
+    Customer -> MembershipService: [커맨드] 재조회 요청 (복구경로)
+    MembershipService --> Customer: [이벤트] 포인트·등급·혜택 카드 표시됨 (피드백: 재시도 성공)
+end
+
+deactivate MembershipService
+
+@enduml

@@ -1,0 +1,28 @@
+@startuml
+!theme mono
+title 02. 잠금화면·홈위젯 확인
+' 반영: 도그냥 - 위젯 데이터 신선도 실패 대응(마지막 갱신시각 배지, 갱신실패 이벤트) 추가, 최종 확정 값은 03/01에서 재조회
+' 반영: 데브프론트 - 위젯 탭 시 앱 진입 딥링크 이벤트 추가
+
+actor "고객" as Customer
+participant "멤버십조회서비스" as MembershipService
+participant "(E)운영체제위젯API" as WidgetAPI
+
+Customer -> Customer: [커맨드] 휴대폰 화면 켜기 (잠금화면/홈화면 확인)
+
+WidgetAPI -> MembershipService: [커맨드] 위젯 표시용 요약 데이터 갱신 요청 (주기적)
+activate MembershipService
+
+alt 갱신 성공
+    MembershipService --> WidgetAPI: [이벤트] 위젯용 요약정보 전달됨\n[데이터] 포인트요약, 등급, 소멸 D-day, 마지막 갱신시각
+    WidgetAPI --> Customer: [이벤트] 잠금화면·홈위젯에 핵심 정보 표시됨\n[안내메시지] 3초 이내 확인 가능
+else 갱신 실패
+    MembershipService --> WidgetAPI: [이벤트] 위젯 갱신 실패됨
+    WidgetAPI --> Customer: [이벤트] 잠금화면·홈위젯에 이전 데이터 유지 표시됨\n[안내메시지] 마지막 갱신시각 배지 표시 (최신값은 앱 진입 시 01에서 재확인)
+end
+deactivate MembershipService
+
+Customer -> WidgetAPI: [커맨드] 위젯 탭
+WidgetAPI --> Customer: [이벤트] 딥링크로 앱(01. 통합 혜택 카드 조회) 진입됨
+
+@enduml

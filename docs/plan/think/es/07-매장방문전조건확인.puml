@@ -1,0 +1,35 @@
+@startuml
+!theme mono
+title 07. 매장 방문 전 조건 확인
+' 반영: 피오 - 매장 현장 조건 불일치 문제는 비즈니스가치.md에서 3순위로 제외 결정됨. 본 유저플로우는 MVP 범위가 아니며
+'         MVP 이후 검토 대상으로 보류함(완전 삭제하지 않고 설계 참고용으로 유지)
+' 반영: 데브프론트 - 조건 미충족 시 03과 동일한 대안 매장 안내 경로 추가(일관성 확보)
+' 반영: 가디언 - 03과 동일하게 조회 실패/지연 분기 추가(기존 미충족 분기만 존재)
+' 반영: 파이프 - 외부연동 타임아웃/서킷브레이커 정책 추가
+' 반영: 가디언 - 경계값(최소구매금액 이상, 마감시각 포함) 명시
+
+actor "고객" as Customer
+participant "멤버십조회서비스" as MembershipService
+participant "(E)제휴매장시스템" as PartnerStore
+
+Customer -> MembershipService: [커맨드] 방문 예정 매장 혜택 사용 조건 조회
+activate MembershipService
+
+MembershipService -> MembershipService: [정책/규칙] 외부연동 타임아웃 3초 + 서킷브레이커 적용
+MembershipService -> PartnerStore: [커맨드] 매장별 등급제한·사용조건 확인 요청
+
+alt 정상 응답 - 사용 조건 충족
+    PartnerStore --> MembershipService: [이벤트] 매장 사용조건 회신됨\n[데이터] 등급제한, 최소구매금액(이상), 사용가능시간(마감시각 포함)
+    MembershipService --> Customer: [이벤트] 사용 가능 조건 확인됨 안내
+else 정상 응답 - 사용 조건 미충족 (현장 거절 방지)
+    PartnerStore --> MembershipService: [이벤트] 매장 사용조건 회신됨
+    MembershipService --> Customer: [이벤트] 사용 불가 사유 안내됨\n[안내메시지] 등급 조건 미충족: OO등급 이상 사용 가능
+    MembershipService -> MembershipService: [정책/규칙] 인근 대안 매장 안내 (03과 동일 정책 적용)
+    MembershipService --> Customer: [이벤트] 대안 혜택 매장 안내됨 (피드백, 복구경로)
+else 조회 실패/지연 (03과의 예외처리 일관성 확보)
+    MembershipService --> Customer: [이벤트] 조건 조회 실패 안내됨\n[안내메시지] 조건 확인이 지연되고 있습니다. 매장 방문 후 다시 확인해주세요
+end
+
+deactivate MembershipService
+
+@enduml
