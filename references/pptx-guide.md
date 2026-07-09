@@ -2,7 +2,7 @@
 
 ## 0. 패턴 개요 (Spec Agent + Orchestrator Builder)
 
-DMAP 표준 PPT 생성 패턴은 **2단계 분리 구조**임:
+표준 PPT 생성 패턴은 **2단계 분리 구조**임:
 
 ```
 [사용자 요구]
