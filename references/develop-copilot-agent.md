@@ -66,12 +66,17 @@ Claude Opus4.8을 선택합니다.
 ## Knowledge에 가이드 등록  
 One Drive의 `hands-on/membership/plan`과 `hands-on/references` 폴더를 등록합니다.    
 ![](images/2026-07-11-21-44-48.png)    
+  
 ![](images/2026-07-11-21-45-07.png)    
+  
 ![](images/2026-07-11-21-45-31.png)    
+  
 ![](images/2026-07-11-21-46-16.png)    
-![](images/2026-07-11-21-46-33.png)  
-![](images/2026-07-11-21-47-40.png)   
-
+  
+![](images/2026-07-11-21-46-33.png)    
+  
+![](images/2026-07-11-21-47-40.png)    
+ 
 --- 
 
 ## Skill 등록   
