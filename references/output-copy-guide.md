@@ -46,7 +46,7 @@
   | 3. 솔루션 구체화 (이벤트스토밍 결과) | docs/plan/think/es/ | plan/think/es | 하위 전체 |
 
   **복사방법**        
-  - 멤버십 프로젝트에 디렉토리 생성: plan 디렉토리 만들고 하위에 define과 think 디렉토리 생성  
+  - 멤버십 프로젝트에 디렉토리 생성: plan 디렉토리 만들고 하위에 define, think, prompts 디렉토리 생성  
   - 소스 디렉토리에서 복사할 파일을 멀티 선택하고 복사(CTRL-C 또는 Cmd+C)   
     ![](images/2026-07-11-17-29-45.png)  
   - 멤버십 프로젝트의 대상 디렉토리 선택하고 붙여넣기(CTRL-V 또는 Cmd+V)  
@@ -59,5 +59,5 @@
 |-------|--------------|--------------|--------|
 | PRD 작성 참조 | references | references | prd-guide.md |
 | PRD 샘플 | references | references | sample-PRD-점심메뉴선택서비스.md |
-
+| 스킬 개발 프롬프트 | prompts | prompts | skill.txt |
 
